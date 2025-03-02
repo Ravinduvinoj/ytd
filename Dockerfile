@@ -1,5 +1,5 @@
 # Use the official Node.js 20 LTS image as the base image
-FROM node:22
+FROM node:20
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -16,10 +16,9 @@ COPY . .
 # Create a directory for downloads and set correct permissions
 RUN mkdir -p /app/downloads && chmod -R 777 /app/downloads
 
-# Install Python and yt-dlp to ensure downloads work
+# Install Python & yt-dlp using APT (fixes externally-managed error)
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    pip3 install yt-dlp && \
+    apt-get install -y python3 python3-pip yt-dlp && \
     rm -rf /var/lib/apt/lists/*
 
 # Expose the port the app will run on
