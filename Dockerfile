@@ -1,23 +1,20 @@
-# Use an official lightweight Python image
+# Use the official Python image as the base image
 FROM python:3.11-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy only requirements file first (to leverage Docker caching)
-COPY requirements.txt ./
+# Copy the requirements file first to leverage Docker's caching mechanism
+COPY requirements.txt .
 
-# Install Python dependencies
+# Install dependencies from the requirements file
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire application
+# Copy the rest of the application files
 COPY . .
 
-# Create a directory for downloads
-RUN mkdir -p downloads
-
-# Expose the port Flask is running on
+# Expose the port that the app will run on
 EXPOSE 3000
 
-# Set the command to run the Flask app
-CMD ["python", "app.py"]
+# Use Gunicorn to serve the Flask app (with binding to 0.0.0.0:3000)
+CMD ["gunicorn", "-b", "0.0.0.0:3000", "app:app"]
