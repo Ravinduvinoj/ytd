@@ -14,7 +14,7 @@ RUN npm ci --legacy-peer-deps --only=production
 COPY . .
 
 # Ensure yt-dlp.exe has execute permissions (if present)
-RUN chmod +x /yt-dlp.exe || true
+RUN chmod +x /app/yt-dlp.exe || true
 
 # Expose the application port
 EXPOSE 3000
