@@ -1,5 +1,5 @@
-# Use the official Node.js 20 image as the base image
-FROM node:20
+# Use the official Node.js 20 LTS image as the base image
+FROM node:22
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -8,16 +8,19 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies using npm ci for a clean, reproducible build
-RUN npm ci --legacy-peer-deps --only=production
+RUN npm ci --only=production
 
 # Copy the rest of the application files
 COPY . .
 
-# Ensure yt-dlp.exe is executable
-RUN chmod +x yt-dlp.exe
+# Create a directory for downloads and set correct permissions
+RUN mkdir -p /app/downloads && chmod -R 777 /app/downloads
 
-# Create a directory for downloads
-RUN mkdir -p downloads
+# Install Python and yt-dlp to ensure downloads work
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    pip3 install yt-dlp && \
+    rm -rf /var/lib/apt/lists/*
 
 # Expose the port the app will run on
 EXPOSE 3000

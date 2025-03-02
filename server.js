@@ -3,6 +3,7 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+
 const app = express();
 const PORT = 3000;
 
@@ -19,10 +20,10 @@ app.post('/download', (req, res) => {
     return res.status(400).json({ error: 'YouTube URL is required' });
   }
 
-  const ytDlpPath = path.join(__dirname, 'yt-dlp.exe');
-  const outputPathTemplate = path.join(__dirname, 'downloads', '%(id)s.%(ext)s'); // Use video ID to prevent naming issues
+  const outputPathTemplate = path.join(__dirname, 'downloads', '%(id)s.%(ext)s');
 
-  const process = spawn(ytDlpPath, ['-f', 'best', '-o', outputPathTemplate, url]);
+  // Use Python's yt-dlp module instead of yt-dlp.exe
+  const process = spawn('python', ['-m', 'yt_dlp', '-f', 'best', '-o', outputPathTemplate, url]);
 
   process.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -34,9 +35,13 @@ app.post('/download', (req, res) => {
 
   process.on('close', (code) => {
     if (code === 0) {
-      const videoFilePath = path.join(__dirname, 'downloads', `${url.match(/(?:v=)(.*?)(?:&|$)/)[1]}.mp4`);
+      const videoIdMatch = url.match(/(?:v=)(.*?)(?:&|$)/);
+      if (!videoIdMatch) {
+        return res.status(400).json({ error: 'Invalid YouTube URL' });
+      }
+
+      const videoFilePath = path.join(__dirname, 'downloads', `${videoIdMatch[1]}.mp4`);
       
-      // Ensure the file exists before sending
       if (fs.existsSync(videoFilePath)) {
         const file = fs.createReadStream(videoFilePath);
         res.setHeader('Content-Disposition', `attachment; filename="${path.basename(videoFilePath)}"`);
@@ -50,7 +55,6 @@ app.post('/download', (req, res) => {
     }
   });
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
