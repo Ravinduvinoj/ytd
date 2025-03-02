@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - app-network
+    environment:
+      - API_URL=https://ytdsapi-n2s8ej51.b4a.run  # Referencing the backend container by its service name
+
+networks:
+  app-network:
+    driver: bridge
