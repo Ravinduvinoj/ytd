@@ -1,14 +1,23 @@
-# Use a Windows Server-based Node.js image
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+# Use the official Node.js LTS image
+FROM node:20
 
 # Set the working directory
-WORKDIR C:\app
+WORKDIR /app
 
-# Copy necessary files
-COPY . C:\app
+# Copy package.json and package-lock.json first for better caching
+COPY package*.json ./
+
+# Install dependencies with optimized options
+RUN npm ci --legacy-peer-deps --only=production
+
+# Copy the rest of the application
+COPY . .
+
+# Ensure yt-dlp.exe has execute permissions (if present)
+RUN chmod +x /app/yt-dlp.exe || true
 
 # Expose the application port
 EXPOSE 3000
 
-# Start the application
+# Set the command to start the server
 CMD ["node", "server.js"]
