@@ -19,7 +19,7 @@ app.post('/download', (req, res) => {
     return res.status(400).json({ error: 'YouTube URL is required' });
   }
 
-  const ytDlpPath = path.join(__dirname, 'yt-dlp_linux');
+  const ytDlpPath = path.join(__dirname, 'yt-dlp.exe');
   const outputPathTemplate = path.join(__dirname, 'downloads', '%(id)s.%(ext)s'); // Use video ID to prevent naming issues
 
   const process = spawn(ytDlpPath, ['-f', 'best', '-o', outputPathTemplate, url]);
