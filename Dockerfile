@@ -16,9 +16,10 @@ COPY . .
 # Create a directory for downloads and set correct permissions
 RUN mkdir -p /app/downloads && chmod -R 777 /app/downloads
 
-# Install Python & yt-dlp using APT (fixes externally-managed error)
+# Install yt-dlp properly
 RUN apt-get update && \
     apt-get install -y python3 python3-pip yt-dlp && \
+    chmod +x /usr/bin/yt-dlp && \
     rm -rf /var/lib/apt/lists/*
 
 # Expose the port the app will run on
