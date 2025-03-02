@@ -31,9 +31,12 @@ def download_video():
     output_path = os.path.join(DOWNLOADS_DIR, f"{video_id}.mp4")
 
     try:
-        # Run yt-dlp to download the video
+        # Path to your exported cookies file (update this path)
+        cookies_file = "path/to/your/cookies.json"
+
+        # Run yt-dlp to download the video with cookies
         subprocess.run(
-            ["yt-dlp", "-f", "best", "-o", output_path, url],
+            ["yt-dlp", "--cookies", cookies_file, "-f", "best", "-o", output_path, url],
             check=True,
             capture_output=True,
             text=True
