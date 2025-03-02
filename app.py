@@ -28,6 +28,10 @@ def extract_video_id(url):
 def log_request_info():
     print(f"Request headers: {request.headers}")
     print(f"Request body: {request.get_json()}")
+    print(f"X-Forwarded-For: {request.headers.get('X-Forwarded-For')}")
+    print(f"Cloudfront-TLS: {request.headers.get('Cloudfront-Viewer-Tls')}")
+    print(f"Access-Control-Request-Headers: {request.headers.get('Access-Control-Request-Headers')}")
+
 
 def download_video():
     data = request.get_json()
