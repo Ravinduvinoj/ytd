@@ -23,6 +23,12 @@ def extract_video_id(url):
     return None
 
 @app.route('/download', methods=['POST'])
+
+@app.before_request
+def log_request_info():
+    print(f"Request headers: {request.headers}")
+    print(f"Request body: {request.get_json()}")
+
 def download_video():
     data = request.get_json()
     print(f"Received data: {data}")  # Debug print
