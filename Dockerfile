@@ -1,20 +1,11 @@
-FROM node:20
-
-# Install Python and yt-dlp for Linux
-RUN apt-get update && apt-get install -y python3 python3-pip && \
-    pip3 install yt-dlp
+# Use a Windows Server-based Node.js image
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 # Set the working directory
-WORKDIR /app
+WORKDIR C:\app
 
-# Copy package.json first to optimize caching
-COPY package*.json ./
-
-# Install Node.js dependencies
-RUN npm ci --legacy-peer-deps --only=production
-
-# Copy the rest of the application
-COPY . .
+# Copy necessary files
+COPY . C:\app
 
 # Expose the application port
 EXPOSE 3000
